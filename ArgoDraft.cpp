@@ -1,5 +1,3 @@
-#include "ArgoDraft.h"
-
 #include <iostream>
 
 namespace ArgoDraft
