@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 23 LANGUAGES CXX C)
 add_library(
         ArgoDraft STATIC
 
-        src/ArgoDraft.cpp
-        src/Networking.cpp
-        src/FileSystem.cpp
+        src/ArgoDraft.cpp include/ArgoDraft.hpp
+        src/ConsoleMenu.cpp include/ConsoleMenu.hpp
+        src/Networking.cpp include/Networking.hpp
+        src/FileSystem.cpp include/FileSystem.hpp
 )
