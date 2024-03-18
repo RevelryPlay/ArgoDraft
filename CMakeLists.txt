@@ -18,7 +18,6 @@ add_library(
         src/ConsoleMenu.cpp include/ConsoleMenu.hpp
         src/Networking.cpp include/Networking.hpp
         src/FileSystem.cpp include/FileSystem.hpp
-        src/ConsoleMenu.tests.cpp
 )
 
 include(CTest)
