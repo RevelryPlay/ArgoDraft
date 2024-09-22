@@ -1,5 +1,3 @@
-#include <string>
-
 #ifndef ARGOLOGGER_HPP
 #define ARGOLOGGER_HPP
 
