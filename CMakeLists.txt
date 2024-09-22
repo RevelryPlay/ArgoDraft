@@ -10,7 +10,6 @@ endif ()
 
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-
 add_library(
         ArgoDraft STATIC
 
@@ -18,6 +17,7 @@ add_library(
         src/ConsoleMenu.cpp include/ConsoleMenu.hpp
         src/Networking.cpp include/Networking.hpp
         src/FileSystem.cpp include/FileSystem.hpp
+        src/AroLogger.cpp include/ArgoLogger.hpp
 )
 
 include(CTest)
