@@ -2,6 +2,7 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+#include <mutex>
 
 namespace ArgoDraft {
     Logger::Logger() {
@@ -27,7 +28,6 @@ namespace ArgoDraft {
             return;
         }
 
-        CreateLogFile();
         WriteToLogFile(message, level);
     }
 
@@ -80,8 +80,31 @@ namespace ArgoDraft {
             return;
         }
 
-        // Write the message to the log file
+        // Check if the file exists
+        if (!std::filesystem::exists(this->fileName)) {
+            CreateLogFile();
+        }
+
+        // Check if the file can be written to
+        if (!std::filesystem::is_regular_file(this->fileName)) {
+            if (this->CanConsoleLog(LogLevel::ERROR)) {
+                std::cerr << "Log file can not be written" << std::endl;
+            }
+
+            return;
+        }
+
+        // Check if the file can be opened
         std::ofstream logFile(this->fileName, std::ios_base::app);
+        if (!logFile.is_open()) {
+            if (this->CanConsoleLog(LogLevel::ERROR)) {
+                std::cerr << "Log file can not be opened" << std::endl;
+            }
+
+            return;
+        }
+
+        // Write the message to the log file
         logFile << message << std::endl;
         logFile.close();
     }
