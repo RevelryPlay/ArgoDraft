@@ -4,57 +4,93 @@
 #include <fstream>
 
 namespace ArgoDraft {
+    Logger::Logger() {
+        this->fileName = "ArgoLogger.log";
+    }
+
+    Logger::Logger(
+        const std::string &fileName
+    ) {
+        this->fileName = fileName;
+    }
+
     void Logger::LogMessage(
         const char *message,
-        const char *fileName,
-        const bool console
-    ) {
-        if (console) {
+        const int level
+    ) const {
+        if (this->CanConsoleLog(level)) {
             std::cout << "Logging Message: " << std::endl;
             std::cout << message << std::endl;
         }
 
-        CreateLogFile(fileName, console);
-        WriteToLogFile(message, fileName, console);
+        if (level < this->fileLogLevel) {
+            return;
+        }
+
+        CreateLogFile();
+        WriteToLogFile(message, level);
     }
 
-    void Logger::CreateLogFile(const char *fileName, const bool console) {
-        if (console) {
+    void Logger::SetFileName(
+        const std::string &fileName
+    ) {
+        this->fileName = fileName;
+    }
+
+    void Logger::SetFileLogLevel(const int fileLogLevel) {
+        this->fileLogLevel = fileLogLevel;
+    }
+
+    void Logger::SetConsoleLogLevel(const int consoleLogLevel) {
+       this->consoleLogLevel = consoleLogLevel;
+    }
+
+    void Logger::CreateLogFile() const {
+        if (this->CanConsoleLog(LogLevel::DEBUG)) {
             std::cout << "Creating Log File..." << std::endl;
-            std::cout << "Log File: " << fileName << std::endl;
+            std::cout << "Log File: " << this->fileName << std::endl;
         }
 
         // check if the file exists
-        if (std::filesystem::exists(fileName)) {
-            if (console) {
+        if (std::filesystem::exists(this->fileName)) {
+            if (this->CanConsoleLog(LogLevel::DEBUG)) {
                 std::cout << "Log File already exists." << std::endl;
-                return;
             }
-        }
-        else {
-            if (console) {
+        } else {
+            if (this->CanConsoleLog(LogLevel::DEBUG)) {
                 std::cout << "Log File does not exist." << std::endl;
             }
 
-            std::ofstream logFile(fileName);
+            std::ofstream logFile(this->fileName);
             logFile.close();
         }
     }
 
     void Logger::WriteToLogFile(
         const char *message,
-        const char *fileName,
-        const bool console
-    ) {
-        if (console) {
+        const int level
+    ) const {
+        if (this->CanConsoleLog(level)) {
             std::cout << "Writing to Log File..." << std::endl;
-            std::cout << "Log File: " << fileName << std::endl;
+            std::cout << "Log File: " << this->fileName << std::endl;
             std::cout << "Message: " << message << std::endl;
         }
 
+        if (!this->CanFileLog(level)) {
+            return;
+        }
+
         // Write the message to the log file
-        std::ofstream logFile(fileName, std::ios_base::app);
+        std::ofstream logFile(this->fileName, std::ios_base::app);
         logFile << message << std::endl;
         logFile.close();
+    }
+
+    bool Logger::CanConsoleLog(const int level) const {
+        return (this->consoleLogLevel > LogLevel::NONE) && (level >= this->consoleLogLevel);
+    }
+
+    bool Logger::CanFileLog(const int level) const {
+        return (this->fileLogLevel > LogLevel::NONE) && (level >= this->fileLogLevel);
     }
 }
