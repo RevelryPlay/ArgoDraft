@@ -4,12 +4,12 @@
 
 namespace ArgoDraft {
     struct LogLevel {
-        static constexpr int NONE = -1;
-        static constexpr int DEBUG = 0;
-        static constexpr int INFO = 5;
-        static constexpr int WARNING = 10;
-        static constexpr int ERROR = 15;
-        static constexpr int CRITICAL = 20;
+        static const int NONE = -1;
+        static const int DEBUG = 0;
+        static const int INFO = 5;
+        static const int WARNING = 10;
+        static const int ERROR = 15;
+        static const int CRITICAL = 20;
     };
 
     class Logger {

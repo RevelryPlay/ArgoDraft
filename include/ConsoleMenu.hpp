@@ -1,40 +1,49 @@
 #pragma once
 
+#include <iostream>
+#include <utility>
+#include <vector>
+#include <ranges>
 #include <map>
 #include <string>
-#include <utility>
+
 
 namespace ArgoDraft {
-using MenuItem = struct {
-    std::string Name;
-    std::string Description;
+    struct MenuItem {
+        std::string Name;
+        std::string Description;
+        void ( *Action )();
+        
+        std::vector< std::string > Aliases = {};
+        bool isAlias = false;
+    };
 
-    void ( *Action )();
-};
+    class Menu {
+      public:
+        std::map< std::string, Menu > submenus;
+        std::map< std::string, MenuItem > actions;
+        
+        std::string Name;
+        std::string Description;
 
-class Menu {
-  public:
-    std::map< std::string, Menu > submenus;
-    std::map< std::string, MenuItem > actions;
+        Menu() = default;
+        Menu( std::string name, std::string desc ) : Name( std::move( name ) ), Description( std::move( desc ) ) {}
 
-    Menu() = default;
+        void AddMenu( Menu const &m ) { addSubmenu( m ); }
+        void AddAction( MenuItem const &m ) { addItemAction( m ); }
+        
+        void GetActions();
+        void Init( const std::string & );
+        
+        private:
+          void addSubmenu( Menu const &m );
+          void addItemAction( MenuItem const &m );
+    };
 
-    Menu( std::string name, std::string desc ) : Name( std::move( name ) ), Description( std::move( desc ) ) {}
-
-    std::string Name;
-    std::string Description;
-    void AddMenu( Menu const &m ) { this->submenus[ m.Name ] = m; }
-    void AddAction( MenuItem const &m ) { this->actions[ m.Name ] = m; }
-
-    void GetActions();
-
-    void Init( const std::string & );
-};
-
-class MainMenu : public Menu {
-  public:
-    using Menu::Menu;
-    void Init() { this->Menu::Init( "" ); }
-};
+    class MainMenu : public Menu {
+      public:
+        using Menu::Menu;
+        void Init() { this->Menu::Init( "" ); }
+    };
 
 }
