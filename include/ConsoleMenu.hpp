@@ -7,7 +7,6 @@
 #include <map>
 #include <string>
 
-
 namespace ArgoDraft {
     struct MenuItem {
         std::string Name;
@@ -32,12 +31,17 @@ namespace ArgoDraft {
         void AddMenu( Menu const &m ) { addSubmenu( m ); }
         void AddAction( MenuItem const &m ) { addItemAction( m ); }
         
+        void GetSubmenus();
         void GetActions();
         void Init( const std::string & );
         
         private:
+            std::vector< std::string > builtInCommands = { "back", "exit", "info", "help", "ls" };
+          
           void addSubmenu( Menu const &m );
           void addItemAction( MenuItem const &m );
+          
+          bool isValidCommand( const std::string &input );
     };
 
     class MainMenu : public Menu {
@@ -45,5 +49,4 @@ namespace ArgoDraft {
         using Menu::Menu;
         void Init() { this->Menu::Init( "" ); }
     };
-
 }
